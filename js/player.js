@@ -39,6 +39,10 @@ const playAudio = () => {
             currentTime = audio.currentTime;    
             progressBar.style.width = currentTime / audio.duration * 100 + "%";
             timeCurrent.textContent = getTimeCodeFromNum(currentTime);
+
+            if (audio.currentTime === audio.duration) {
+                playNext();
+            }
         }, 500);
     }
 
@@ -52,23 +56,41 @@ const playAudio = () => {
 };
 
 export const addPlayList = () => {
-    playList.forEach(el => {
+    playList.forEach((el, i) => {
         const li = document.createElement("li");
         playListContainer.append(li);
         li.classList.add("play-item");
         li.textContent = el.title;
+
+        li.addEventListener("click", () => {
+            playNum = i;
+
+            const playListLi = Array.from(playListContainer.children);
+            playListLi.forEach(item => {
+                item.classList.remove("item-active");
+            });
+            
+            if (i === playNum) {
+                li.classList.add("play-item", "item-active");
+                btnPlay.classList.add("pause");
+                playAudio();
+            }
+
+        });
     });
 };
 
 const playNext = () => { 
     playNum = playNum < 3 ? playNum + 1 : 0;
     resetСurrentTime();
+    btnPlay.classList.add("pause");
     playAudio();
 };
 
 const playPrev = () => {
     playNum = playNum > 0 ? playNum - 1 : 3;
     resetСurrentTime();
+    btnPlay.classList.add("pause");
     playAudio();
 };
 
@@ -80,7 +102,7 @@ const toggleBtnPlay = () => {
 timeLine.addEventListener("click", e => {
     const timeLineWidth = window.getComputedStyle(timeLine).width;
     const timeToSeek = e.offsetX / parseInt(timeLineWidth) * audio.duration;
-    audio.currentTime = timeToSeek;
+    audio.currentTime = timeToSeek || 0;
 }, false);
 
 //click volume slider to change volume

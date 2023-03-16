@@ -9,7 +9,14 @@ const name = document.querySelector(".name");
 const slideNext = document.querySelector(".slide-next");
 const slidePrev = document.querySelector(".slide-prev");
 const local = document.querySelector(".local");
+const btnLocal = document.querySelector(".btnLocal");
 const body = document.querySelector('body');
+const contentConfig = document.querySelector('.contentConfig');
+const btnConfig = document.querySelector('.btnConfig');
+const btnCross = document.querySelector('.cross');
+const checkDefault = document.querySelector('#unsplash');
+const checkUnsplash = document.querySelector('#unsplash');
+const checkFlickr = document.querySelector('#flickr');
 
 export let language = 'ru';
 let randomNum;
@@ -21,7 +28,6 @@ const showTime = () => {
 
     setTimeout(showTime, 1000);
     showDate();
-    //setBg();
 }
 
 const showDate = (locale = 'ru') => {
@@ -71,13 +77,62 @@ const showGreeting = (local = 'ru') => {
 
 const getRandomNum = () => Math.floor(Math.random() * (20 - 1 + 1)) + 1;
 
-const getSlideNext = () => getLinkToImage();
-const getSlidePrev = () => getLinkToImage();
+const getSlideNext = () => {
+    const currentLoader = localStorage.getItem('imageUploaded');
+    
+    if (randomNum < 20) {
+        randomNum++;
 
+        if (currentLoader && currentLoader === 'unsplash') {
+            getLinkFromUnsplash();
+        } else if (currentLoader && currentLoader === 'flickr') {
+            getLinkFromFlickr(randomNum);
+        } else {
+            setBg(randomNum);
+        }
+
+    } else {
+        
+        if (currentLoader && currentLoader === 'unsplash') {
+            getLinkFromUnsplash();
+        } else if (currentLoader && currentLoader === 'flickr') {
+            getLinkFromFlickr(1);
+        } else {
+            setBg(1);
+        }
+    }
+} 
+
+const getSlidePrev = () => {
+    const currentLoader = localStorage.getItem('imageUploaded');
+
+    if (randomNum > 1) {
+        randomNum--;
+        
+        if (currentLoader && currentLoader === 'unsplash') {
+            getLinkFromUnsplash();
+        } else if (currentLoader && currentLoader === 'flickr') {
+            getLinkFromFlickr(randomNum);
+        } else {
+            setBg(randomNum);
+        }
+
+    } else {
+        
+        if (currentLoader && currentLoader === 'unsplash') {
+            getLinkFromUnsplash();
+        } else if (currentLoader && currentLoader === 'flickr') {
+            getLinkFromFlickr(randomNum);
+        } else {
+            setBg(20);
+        }
+
+    }
+}
 slideNext.addEventListener('click', getSlideNext);
 slidePrev.addEventListener('click', getSlidePrev);
 
-const getLinkToImage = (num = 0) => {
+const getLinkFromFlickr = (num = 0) => {
     const timeOfDay = getTimeOfDay();
     const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=780cd4d9a1e998a48f2973750dc08f1c&tags=${timeOfDay}&extras=url_l&format=json&nojsoncallback=1`;
     fetch(url)
@@ -97,18 +152,33 @@ const getLinkToImage = (num = 0) => {
       });
 }
 
-/*const setBg = (num = 0) => {
+const getLinkFromUnsplash = () => {
+    const timeOfDay = getTimeOfDay();
+    const url = `https://api.unsplash.com/photos/random?orientation=landscape&query=${timeOfDay}&client_id=MF082mgtp6Gqpvm3pgXSeWB5FoY-3A8pRzV3zVcePcM`;
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+            const img = new Image();
+            const src = data.urls.regular;
+            img.src = src;
+            img.onload = () => {      
+                body.style.backgroundImage = `url(${src})`;
+            };
+      });
+}
+
+const setBg = (num = 0) => {
     const timeOfDay = getTimeOfDay();
     const bgNum = num ? num.toString().padStart(2, "0") : getRandomNum().toString().padStart(2, "0");
     randomNum = bgNum;
 
     const img = new Image();
-    const src = `https://raw.githubusercontent.com/rolling-scopes-school/stage1-tasks/assets/images/${timeOfDay}/${bgNum}.jpg`;
+    const src = `./assets/images/${timeOfDay}/${bgNum}.jpg`;
     img.src = src;
     img.onload = () => {      
         body.style.backgroundImage = `url(${src})`;
     };
-}*/
+}
 
 const setLocalStorage = (e) => {
     if (e.type === "keypress") {
@@ -126,54 +196,72 @@ const setLocalStorage = (e) => {
     if (e.type === "blur") {
         name.value = localStorage.getItem('name');
     }
-    // localStorage.setItem('name', name.value);
 }
+
+const getLocalStorage = (lang = 'ru') => {
+    const currentLoader = localStorage.getItem('imageUploaded');
+
+    if (localStorage.getItem('name') !== null) {
+        name.value = localStorage.getItem('name');
+    } else {
+        name.value = lang === 'ru' ? '[Ваше имя]' : '[Enter Name]';
+    }
+
+    if (currentLoader && currentLoader === 'unsplash') {
+        getLinkFromUnsplash();
+        checkUnsplash.checked = true;
+    } 
+    
+    if (currentLoader && currentLoader === 'flickr') {
+        getLinkFromFlickr();
+        checkFlickr.checked = true;
+    }
+}
+
+name.addEventListener('keypress', setLocalStorage);
+name.addEventListener('blur', setLocalStorage);
+name.addEventListener('click', setLocalStorage);
 
 const changeLang = () => {
     local.classList.toggle('ru');
     language = local.classList.contains('ru') ? 'ru' : 'en';
-    local.textContent = language === 'ru' ? 'Русский' : 'English';
+    btnLocal.textContent = language === 'ru' ? 'РУ' : 'EN';
     
     showGreeting(language);
     showDate(language);
     getWeather(language);
     getQuotes(language);
+    getLocalStorage(language);
 }
-
-
-window.addEventListener('beforeunload', setLocalStorage);
-name.addEventListener('keypress', setLocalStorage);
-name.addEventListener('blur', setLocalStorage);
-name.addEventListener('click', setLocalStorage);
-
-const getLocalStorage = () => {
-    if (localStorage.getItem('name')) {
-        name.value = localStorage.getItem('name');
-    } else {
-        name.value = '[Enter Name]';
-    }
-}
-window.addEventListener('load', getLocalStorage);
 
 local.addEventListener('click', changeLang);
 
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelector('.header').style.display = 'none';
-    document.querySelector('.main').style.display = 'none';
-    document.querySelector('.footer').style.display = 'none';
-    setTimeout(showPage, 1000);
-});
+btnConfig.addEventListener('click', () => {
+    contentConfig.classList.toggle('visible');
+    }
+);
+btnCross.addEventListener('click', () => {
+    contentConfig.classList.remove('visible');
+    }
+);
 
-const showPage = () => {
-    document.querySelector('.loader').style.display = 'none';
-    document.querySelector('.header').style.display = 'flex';
-    document.querySelector('.main').style.display = 'flex';
-    document.querySelector('.footer').style.display = 'flex';
-}
+checkDefault.addEventListener('click', () => {
+    setBg();
+    localStorage.removeItem("imageUploaded");
+});
+checkUnsplash.addEventListener('click', () => {
+    getLinkFromUnsplash();
+    localStorage.setItem('imageUploaded', 'unsplash');
+});
+checkFlickr.addEventListener('click', () => {
+    getLinkFromFlickr();
+    localStorage.setItem('imageUploaded', 'flickr');
+}); 
 
 // Run
-getLinkToImage();
+getLocalStorage();
 showTime();
+setBg();
 addPlayList();
 showGreeting();
 getWeather();

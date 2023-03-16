@@ -10,69 +10,93 @@
   <title>momentum</title>
 </head>
 <body>
-  <div class="loader"></div>
-  <header class="header">
-    <div class="player">
-      <div class="player-container">
-        <div class="player-head">
-          <div class="player-song"></div>
-          <div class="player-volume">
-            <div class="volume-button">
-              <div class="volume icono-volumeMedium"></div>
-            </div>
-            <div class="volume-slider">
-              <div class="volume-percentage"></div>
+  <div class="main-container">
+    <header class="header">
+      <div class="player">
+        <div class="player-container">
+          <div class="player-head">
+            <div class="player-song"></div>
+            <div class="player-volume">
+              <div class="volume-button">
+                <div class="volume icono-volumeMedium"></div>
+              </div>
+              <div class="volume-slider">
+                <div class="volume-percentage"></div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="player-timeline">
-          <div class="progress"></div>
-        </div>
-        <div class="player-time">
-          <div class="time-current">0:00</div>
-          <div class="time-length"></div>
-        </div>
-        <div class="player-controls">
-          <button class="play-prev player-icon"></button>
-          <button class="play player-icon"></button>
-          <button class="play-next player-icon"></button>
-        </div>
-      </div>  
-      <ul class="play-list"></ul>
-    </div>
-    <div class="local ru">Русский</div>
-    <div class="weather">
-      <input type="text" class="city" />
-      <i class="weather-icon owf"></i>
-      <div class="weather-error"></div>
-      <div class="description-container">
-        <span class="temperature"></span>
-        <span class="weather-description"></span>
+          <div class="player-timeline">
+            <div class="progress"></div>
+          </div>
+          <div class="player-time">
+            <div class="time-current">0:00</div>
+            <div class="time-length"></div>
+          </div>
+          <div class="player-controls">
+            <button class="play-prev player-icon"></button>
+            <button class="play player-icon"></button>
+            <button class="play-next player-icon"></button>
+          </div>
+        </div>  
+        <ul class="play-list"></ul>
       </div>
-      <div class="wind"></div>
-      <div class="humidity"></div>
-    </div>
-  </header>
-  <main class="main">
-    <div class="slider-icons">
-      <button class="slide-prev slider-icon"></button>
-      <button class="slide-next slider-icon"></button>
-    </div>
-    <time class="time"></time>
-    <date class="date"></date>
-    <div class="greeting-container">
-      <span class="greeting"></span>
-      <input type="text" class="name" />
-    </div>
-  </main>
-  <footer class="footer">
-    <button class="change-quote"></button>
-    <div>
-      <div class="quote"></div>
-      <div class="author"></div>
-    </div>
-  </footer>
+      <div class="weather">
+        <input type="text" class="city" />
+        <i class="weather-icon owf"></i>
+        <div class="weather-error"></div>
+        <div class="description-container">
+          <span class="temperature"></span>
+          <span class="weather-description"></span>
+        </div>
+        <div class="wind"></div>
+        <div class="humidity"></div>
+      </div>
+    </header>
+    <main class="main">
+      <div class="slider-icons">
+        <button class="slide-prev slider-icon"></button>
+        <button class="slide-next slider-icon"></button>
+      </div>
+      <time class="time"></time>
+      <date class="date"></date>
+      <div class="greeting-container">
+        <span class="greeting"></span>
+        <input type="text" class="name" />
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="config">
+        <button class="btnConfig"></button>
+        <div class="contentConfig">
+          <div class="cross"></div>
+          <span>Choose your picture from:</span>
+            <div>
+              <input type="radio" id="default" name="ImgAPI" checked>
+              <label for="default">default</label>
+            </div>
+            <div>
+              <input type="radio" id="unsplash" name="ImgAPI">
+              <label for="unsplash">Unsplash</label>
+            </div>
+            <div>
+              <input type="radio" id="flickr" name="ImgAPI">
+              <label for="flickr">Flickr</label>
+            </div>
+        </div>
+      </div>
+      <div>
+          <button class="change-quote"></button>
+          <div>
+            <div class="quote"></div>
+            <div class="author"></div>
+          </div>
+      </div>
+      <div class="local ru">
+        <button class="btnLocal">РУ</button>
+      </div>
+    </footer>
+  </div>
   <script type="module" src="js/script.js"></script>
   <script type="module" src="js/weather.js"></script>
   <script type="module" src="js/quotes.js"></script>
